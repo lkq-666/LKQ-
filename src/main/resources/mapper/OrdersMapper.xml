@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lkq.lkqcrm.mapper.OrdersMapper">
+  <resultMap id="OrdersResult" type="com.lkq.lkqcrm.entity.Orders">
+    <id column="orders_id" jdbcType="INTEGER" property="ordersId" />
+    <result column="total_price" jdbcType="VARCHAR" property="totalPrice" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <collection  property="businessList" javaType="java.util.List"  resultMap="BusinessListResult" />
+    <collection  property="customerList" javaType="java.util.List"  resultMap="CustomerListResult" />
+  </resultMap>
+  <!-- 部门映射结果 -->
+  <resultMap id="BusinessListResult" type="com.lkq.lkqcrm.entity.Business">
+    <id column="business_id" property="businessId" />
+    <result column="business_name" property="businessName" />
+    <result column="head" property="head" />
+    <result column="tel_phone" property="telPhone" />
+    <result column="description" property="description" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+    <result column="is_del" property="isDel" />
+  </resultMap>
+  <resultMap id="CustomerListResult" type="com.lkq.lkqcrm.entity.Customer">
+    <id column="customer_id" property="customerId" />
+    <result column="customer_name" property="customerName" />
+    <result column="sex" property="sex" />
+    <result column="tel_phone" property="telPhone" />
+    <result column="company" property="company" />
+    <result column="address" property="address" />
+    <result column="is_orders" property="isOrders" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+    <result column="is_del" property="isDel" />
+  </resultMap>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+        select distinct o.orders_id,o.total_price,o.create_time,o.update_time,o.is_del,
+        b.business_id,b.business_name,c.customer_id,c.customer_name
+	    from orders o
+	        left join orders_business_customer obc on o.orders_id = obc.orders_id		-- 员工和角色的关系
+			LEFT JOIN business b ON b.business_id = obc.business_id
+			LEFT JOIN customer c ON c.customer_id = obc.customer_id
+    </sql>
+  <select id="selectList" resultMap="OrdersResult">
+    <include refid="Base_Column_List" />
+    where o.is_del =0
+  </select>
+  <select id="selectByName" parameterType="String" resultMap="OrdersResult">
+    <include refid="Base_Column_List" />
+    where business_name = #{businessName} and o.is_del =0
+  </select>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lkq.lkqcrm.mapper.RoleMapper">
+  <resultMap id="RoleResult" type="com.lkq.lkqcrm.entity.Role">
+    <id column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <collection  property="departmentList" javaType="java.util.List"  resultMap="DepartmentResult" />
+  </resultMap>
+  <!-- 部门映射结果 -->
+  <resultMap id="DepartmentResult" type="com.lkq.lkqcrm.entity.Department">
+    <id column="dept_id" property="deptId" />
+    <result column="dept_name" property="deptName" />
+    <result column="create_time" property="createTime" />
+    <result column="update_time" property="updateTime" />
+    <result column="is_del" property="isDel" />
+  </resultMap>
+  <!-- 通用查询结果列 -->
+  <sql id="Base_Column_List">
+        select distinct r.role_id,role_name,r.create_time,r.update_time,r.is_del,
+        d.dept_id,d.dept_name
+	    from role r
+	        left join dept_role dr on r.role_id = dr.role_id		-- 员工和角色的关系
+			LEFT JOIN department d ON d.dept_id = dr.dept_id
+    </sql>
+  <select id="selectList" resultMap="RoleResult">
+    <include refid="Base_Column_List" />
+    where r.is_del =0
+  </select>
+  <select id="selectByName" parameterType="String" resultMap="RoleResult">
+    <include refid="Base_Column_List" />
+    where role_name = #{roleName} and r.is_del =0
+  </select>
+
+</mapper>
