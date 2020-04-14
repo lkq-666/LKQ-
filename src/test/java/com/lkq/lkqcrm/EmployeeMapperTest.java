@@ -16,6 +16,6 @@ public class EmployeeMapperTest {
 
     @Test
     public void selectList(){
-       /* System.out.println(employeeMapper.selectList(1));*/
+       System.out.println("小帅龙");
     }
 }
