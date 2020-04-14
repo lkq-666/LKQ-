@@ -18,5 +18,7 @@ public class EmployeeMapperTest {
     public void selectList(){
        System.out.println("小帅龙");
         System.out.println("凌康乾");
+        System.out.println("小帅龙");
+        System.out.println("凌康乾");
     }
 }
